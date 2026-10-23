@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config() // 開發環境才讀取 .env
+}
 const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars') // 引入 express-handlebars

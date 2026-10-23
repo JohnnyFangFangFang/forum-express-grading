@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.11.0",
     "connect-flash": "^0.1.1",
     "dayjs": "^1.10.6",
+    "dotenv": "^16.6.1",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
