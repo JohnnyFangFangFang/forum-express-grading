@@ -29,6 +29,7 @@ passport.serializeUser((user, cb) => {
 })
 passport.deserializeUser((id, cb) => {
   User.findByPk(id).then(user => {
+    user = user.toJSON() // 轉成純物件，Handlebars 才讀得到 isAdmin、email 等屬性
     return cb(null, user)
   })
 })
