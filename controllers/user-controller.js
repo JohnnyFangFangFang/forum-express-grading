@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
 const db = require('../models')
-const { User } = db
+const { User, Comment, Restaurant } = db
 const helpers = require('../helpers/auth-helpers')
 const { cloudinaryFileHandler } = require('../helpers/file-helpers')
 const userController = {
@@ -41,10 +41,24 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    return User.findByPk(req.params.id, {
+      include: { model: Comment, include: Restaurant } // 一併撈出使用者的評論，以及每則評論對應的餐廳
+    })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
-        res.render('users/profile', { user: user.toJSON() })
+        user = user.toJSON()
+        const comments = user.Comments || [] // 沒有任何評論時，Comments 可能不存在
+        // 同一間餐廳評論多次只列一次：用餐廳 id 當 key 去除重複
+        const restaurantMap = new Map()
+        comments.forEach(comment => {
+          if (comment.Restaurant) restaurantMap.set(comment.Restaurant.id, comment.Restaurant)
+        })
+        const commentedRestaurants = [...restaurantMap.values()]
+        res.render('users/profile', {
+          user,
+          commentedRestaurants,
+          commentCount: comments.length
+        })
       })
       .catch(err => next(err))
   },

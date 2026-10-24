@@ -19,4 +19,25 @@
     </div>
   </div>
 </div>
+<div class="card mb-4">
+  <div class="card-header">
+    <strong>{{commentedRestaurants.length}}</strong> 間評論過的餐廳（共 {{commentCount}} 則評論）
+  </div>
+  <div class="card-body">
+    {{#if commentedRestaurants.length}}
+      <div class="row">
+        {{#each commentedRestaurants}}
+          <div class="col-6 col-md-2 mb-3 text-center">
+            <a href="/restaurants/{{this.id}}">
+              <img class="img-fluid rounded mb-1" src="{{this.image}}" alt="{{this.name}}">
+              <div class="small text-truncate">{{this.name}}</div>
+            </a>
+          </div>
+        {{/each}}
+      </div>
+    {{else}}
+      <p class="text-muted mb-0">還沒有評論過任何餐廳</p>
+    {{/if}}
+  </div>
+</div>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>
