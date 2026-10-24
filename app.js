@@ -29,6 +29,7 @@ app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages') // 設定 success_msg 訊息
   res.locals.error_messages = req.flash('error_messages') // 設定 warning_msg 訊息
   res.locals.user = getUser(req)
+  res.locals.loginUser = getUser(req) // 給 header 用，避免和個人頁面傳入的 user 撞名
   next()
 })
 app.use(routes)
