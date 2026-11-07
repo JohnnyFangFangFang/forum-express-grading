@@ -1,0 +1,15 @@
+{{#if restaurants.length}}
+  <div class="row">
+    {{#each restaurants}}
+      <div class="col-4 col-md-3 mb-3 text-center">
+        <a href="/restaurants/{{this.id}}">
+          <img class="img-fluid rounded mb-1" src="{{this.image}}" alt="{{this.name}}"
+            style="width: 100%; height: 80px; object-fit: cover;">
+          <div class="small text-truncate">{{this.name}}</div>
+        </a>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p class="text-muted mb-0">{{emptyText}}</p>
+{{/if}}

@@ -1,0 +1,20 @@
+{{#if users.length}}
+  <div class="row">
+    {{#each users}}
+      <div class="col-4 mb-3 text-center">
+        <a href="/users/{{this.id}}">
+          {{#if this.image}}
+            <img class="rounded-circle mb-1" src="{{this.image}}" alt="{{this.name}}"
+              style="width: 64px; height: 64px; object-fit: cover;">
+          {{else}}
+            <img class="rounded-circle mb-1" src="https://fakeimg.pl/64/" alt="{{this.name}}"
+              style="width: 64px; height: 64px;">
+          {{/if}}
+          <div class="small text-truncate">{{this.name}}</div>
+        </a>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p class="text-muted mb-0">{{emptyText}}</p>
+{{/if}}

@@ -1,3 +1,4 @@
+{{!-- 個人資料 --}}
 <div class="card mb-4">
   <div class="row g-0">
     <div class="col-md-4 p-3 text-center">
@@ -12,32 +13,63 @@
       <div class="card-body">
         <h3 class="card-title">{{user.name}}</h3>
         <p class="card-text">{{user.email}}</p>
-        {{#ifCond user.id loginUser.id}}
+        <ul class="list-unstyled">
+          <li><strong>{{commentedRestaurants.length}}</strong> 間評論過的餐廳（共 {{commentCount}} 則評論）</li>
+          <li><strong>{{favoritedRestaurants.length}}</strong> 間收藏的餐廳</li>
+          <li><strong>{{followings.length}}</strong> 位追蹤中</li>
+          <li><strong>{{followers.length}}</strong> 位追蹤者</li>
+        </ul>
+        {{#if isSelf}}
           <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit Profile</a>
-        {{/ifCond}}
+        {{else}}
+          {{#if isFollowed}}
+            <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+              <button type="submit" class="btn btn-danger">取消追蹤</button>
+            </form>
+          {{else}}
+            <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+              <button type="submit" class="btn btn-primary">追蹤</button>
+            </form>
+          {{/if}}
+        {{/if}}
       </div>
     </div>
   </div>
 </div>
-<div class="card mb-4">
-  <div class="card-header">
-    <strong>{{commentedRestaurants.length}}</strong> 間評論過的餐廳（共 {{commentCount}} 則評論）
-  </div>
-  <div class="card-body">
-    {{#if commentedRestaurants.length}}
-      <div class="row">
-        {{#each commentedRestaurants}}
-          <div class="col-6 col-md-2 mb-3 text-center">
-            <a href="/restaurants/{{this.id}}">
-              <img class="img-fluid rounded mb-1" src="{{this.image}}" alt="{{this.name}}">
-              <div class="small text-truncate">{{this.name}}</div>
-            </a>
-          </div>
-        {{/each}}
+
+<div class="row">
+  {{!-- 左欄：人 --}}
+  <div class="col-md-4">
+    <div class="card mb-4">
+      <div class="card-header"><strong>{{followings.length}}</strong> 位追蹤中</div>
+      <div class="card-body">
+        {{> profile-users users=followings emptyText='還沒有追蹤任何人'}}
       </div>
-    {{else}}
-      <p class="text-muted mb-0">還沒有評論過任何餐廳</p>
-    {{/if}}
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><strong>{{followers.length}}</strong> 位追蹤者</div>
+      <div class="card-body">
+        {{> profile-users users=followers emptyText='還沒有人追蹤'}}
+      </div>
+    </div>
+  </div>
+
+  {{!-- 右欄：餐廳 --}}
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header">
+        <strong>{{commentedRestaurants.length}}</strong> 間評論過的餐廳（共 {{commentCount}} 則評論）
+      </div>
+      <div class="card-body">
+        {{> profile-restaurants restaurants=commentedRestaurants emptyText='還沒有評論過任何餐廳'}}
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><strong>{{favoritedRestaurants.length}}</strong> 間收藏的餐廳</div>
+      <div class="card-body">
+        {{> profile-restaurants restaurants=favoritedRestaurants emptyText='還沒有收藏任何餐廳'}}
+      </div>
+    </div>
   </div>
 </div>
 <a class="btn btn-outline-secondary" href="javascript:history.back()">Back</a>

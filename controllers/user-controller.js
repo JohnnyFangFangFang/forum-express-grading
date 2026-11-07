@@ -40,23 +40,52 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
+    const userAttributes = ['id', 'name', 'image'] // 追蹤名單只需要顯示頭像和名字，不要把 email、密碼撈出來
+    const restaurantAttributes = ['id', 'name', 'image']
     return User.findByPk(req.params.id, {
-      include: { model: Comment, include: Restaurant } // 一併撈出使用者的評論，以及每則評論對應的餐廳
+      attributes: { exclude: ['password'] }, // 個人頁面用不到密碼雜湊，不要撈出來
+      include: [
+        // 使用者的評論，以及每則評論對應的餐廳
+        { model: Comment, attributes: ['id'], include: { model: Restaurant, attributes: restaurantAttributes } },
+        // 收藏過的餐廳；through: { attributes: [] } 表示不要把 join table（Favorites）的欄位一起帶回來
+        { model: Restaurant, as: 'FavoritedRestaurants', attributes: restaurantAttributes, through: { attributes: [] } },
+        // 追蹤自己的人
+        { model: User, as: 'Followers', attributes: userAttributes, through: { attributes: [] } },
+        // 自己追蹤的人
+        { model: User, as: 'Followings', attributes: userAttributes, through: { attributes: [] } }
+      ]
     })
       .then(user => {
         if (!user) throw new Error("User didn't exist!")
         user = user.toJSON()
-        const comments = user.Comments || [] // 沒有任何評論時，Comments 可能不存在
+        // 沒有任何資料時，這些關聯可能不存在，統一給空陣列
+        const comments = user.Comments || []
+        const favoritedRestaurants = user.FavoritedRestaurants || []
+        const followers = user.Followers || []
+        const followings = user.Followings || []
+
         // 同一間餐廳評論多次只列一次：用餐廳 id 當 key 去除重複
         const restaurantMap = new Map()
         comments.forEach(comment => {
           if (comment.Restaurant) restaurantMap.set(comment.Restaurant.id, comment.Restaurant)
         })
         const commentedRestaurants = [...restaurantMap.values()]
+
+        // 目前登入者是否已追蹤這個頁面的使用者（看自己的頁面時不顯示追蹤按鈕）
+        const loginUser = helpers.getUser(req)
+        const isSelf = Boolean(loginUser && loginUser.id === user.id)
+        const isFollowed = Boolean(loginUser && loginUser.Followings &&
+          loginUser.Followings.some(f => f.id === user.id))
+
         res.render('users/profile', {
           user,
           commentedRestaurants,
-          commentCount: comments.length
+          commentCount: comments.length,
+          favoritedRestaurants,
+          followers,
+          followings,
+          isSelf,
+          isFollowed
         })
       })
       .catch(err => next(err))
