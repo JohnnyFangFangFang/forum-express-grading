@@ -1,7 +1,7 @@
-const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../models')
+const { User, Restaurant, Comment, Favorite, Like, Followship } = require('../../models')
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const helpers = require('../helpers/auth-helpers')
-const { cloudinaryFileHandler } = require('../helpers/file-helpers')
+const helpers = require('../../helpers/auth-helpers')
+const { cloudinaryFileHandler } = require('../../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')

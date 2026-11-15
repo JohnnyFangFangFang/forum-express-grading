@@ -1,6 +1,6 @@
-const { Restaurant, Category, Comment, User } = require('../models')
-const { getOffset, getPagination } = require('../helpers/pagination-helper') // 加入這行
-const helpers = require('../helpers/auth-helpers')
+const { Restaurant, Category, Comment, User } = require('../../models')
+const { getOffset, getPagination } = require('../../helpers/pagination-helper') // 加入這行
+const helpers = require('../../helpers/auth-helpers')
 const restaurantController = {
   getRestaurants: (req, res) => {
     const DEFAULT_LIMIT = 9

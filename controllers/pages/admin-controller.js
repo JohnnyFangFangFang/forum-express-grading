@@ -1,5 +1,5 @@
-const { Restaurant, User, Category } = require('../models')
-const { cloudinaryFileHandler } = require('../helpers/file-helpers') // 將 file-helper 載進來
+const { Restaurant, User, Category } = require('../../models')
+const { cloudinaryFileHandler } = require('../../helpers/file-helpers') // 將 file-helper 載進來
 
 const adminController = {
 
