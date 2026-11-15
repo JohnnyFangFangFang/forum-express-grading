@@ -10,7 +10,7 @@ const session = require('express-session')
 const passport = require('./config/passport')
 const handlebarsHelpers = require('./helpers/handlebars-helpers') // 引入 handlebars-helpers
 const { getUser } = require('./helpers/auth-helpers') // 引入自定義的 auth-helpers
-const { pages } = require('./routes')
+const { pages, apis } = require('./routes')
 const app = express()
 const port = process.env.PORT || 3000
 const SESSION_SECRET = 'secret'
@@ -32,6 +32,7 @@ app.use((req, res, next) => {
   res.locals.loginUser = getUser(req) // 給 header 用，避免和個人頁面傳入的 user 撞名
   next()
 })
+app.use('/api', apis)
 app.use(pages)
 
 app.listen(port, () => {
